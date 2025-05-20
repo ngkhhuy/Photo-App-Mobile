@@ -1,0 +1,43 @@
+{
+    "photos": [
+      {
+        "id": "642",
+        "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=300&fit=crop",
+        "description": "A beautiful sunset over the mountains",
+        "keywords": ["sunset", "mountains", "nature"],
+        "user": {
+          "name": "John Doe",
+          "email": "john.doe@example.com"
+        },
+        "likes": 3,
+        "createdAt": "2025-04-01T10:00:00Z",
+        "updatedAt": "2025-04-02T12:00:00Z"
+      },
+      {
+        "id": "643",
+        "imageUrl": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=300&h=300&fit=crop",
+        "description": "A serene beach with clear blue water",
+        "keywords": ["beach", "ocean", "vacation"],
+        "user": {
+          "name": "Jane Smith",
+          "email": "jane.smith@example.com"
+        },
+        "likes": 5,
+        "createdAt": "2025-04-03T14:00:00Z",
+        "updatedAt": "2025-04-04T16:00:00Z"
+      },
+      {
+        "id": "644",
+        "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&h=300&fit=crop",
+        "description": "A cozy cabin in the woods",
+        "keywords": ["cabin", "woods", "cozy"],
+        "user": {
+          "name": "Alex Brown",
+          "email": "alex.brown@example.com"
+        },
+        "likes": 2,
+        "createdAt": "2025-04-05T09:00:00Z",
+        "updatedAt": "2025-04-06T11:00:00Z"
+      }
+    ]
+  }
