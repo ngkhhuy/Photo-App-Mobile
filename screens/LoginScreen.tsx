@@ -24,12 +24,12 @@ const LoginScreen: React.FC = ({ navigation }: any) => {
       
       // Lưu token với cả hai key để đảm bảo tương thích với mọi nơi trong ứng dụng
       await AsyncStorage.setItem('accessToken', token);
-      await AsyncStorage.setItem('token', token); // Thêm dòng này
+      await AsyncStorage.setItem('token', token);
       
       // Lưu user với token đi kèm để đề phòng
       const userData = {
         ...response.data.user,
-        token: token // Thêm token vào userData
+        token: token
       };
       await AsyncStorage.setItem('user', JSON.stringify(userData));
       
@@ -40,7 +40,7 @@ const LoginScreen: React.FC = ({ navigation }: any) => {
           {
             text: 'OK',
             onPress: () => {
-              // Reset navigation stack so Login is removed completely
+              // Reset navigation để không còn có thể quay lại trang đăng nhập sau khi đăng nhập
               navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
             },
           },
@@ -54,7 +54,6 @@ const LoginScreen: React.FC = ({ navigation }: any) => {
       } else {
         Alert.alert('Error', 'An error occurred. Please try again.');
       }
-      //console.error(error);
     }
   };
 
