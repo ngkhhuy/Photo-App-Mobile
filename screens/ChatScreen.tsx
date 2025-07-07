@@ -19,7 +19,6 @@ import { API_URL } from '../constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import socketService from '../services/socketService';
 
-// Define message type theo mô hình dữ liệu từ tài liệu
 type Message = {
   _id: string;
   text: string;
@@ -29,7 +28,6 @@ type Message = {
   readBy: string[];
 };
 
-// Define chat type theo mô hình dữ liệu từ tài liệu
 type Chat = {
   _id: string;
   participants: string[];
@@ -38,7 +36,6 @@ type Chat = {
   updatedAt: string;
 };
 
-// Định nghĩa kiểu User khớp với dữ liệu nhận được
 type User = {
   name: string;
   email: string;
@@ -52,14 +49,14 @@ type RootStackParamList = {
     email?: string; 
     userId?: string; 
     chatId?: string;
-    user?: User; // Thêm user object để xử lý TH nhận được thông tin người dùng dạng object
+    user?: User;
   };
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>;
 
 const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
-  // Ensure params exist, navigate back if missing
+ 
   useEffect(() => {
     if (!route.params) {
       navigation.goBack();
@@ -153,7 +150,6 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     // Connect to socket
     setupSocketListeners();
     
-    // Clean up socket connection when component unmounts
     return () => {
       if (chat?._id) {
         socketService.leaveChat(chat._id);
@@ -166,7 +162,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
       // Remove socket listeners
       removeSocketListeners();
     };
-  }, [route.params]); // Thêm phụ thuộc vào route.params
+  }, [route.params]);
 
   // Connect to socket khi chat được khởi tạo
   useEffect(() => {
@@ -199,7 +195,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [currentUserId]);
 
-  // Thiết lập socket listeners - Cải thiện bằng cách sử dụng closure
+  // Thiết lập socket listeners
   const setupSocketListeners = () => {
     // Lắng nghe tin nhắn mới với userId mới nhất
     socketService.onMessage((newMessage) => {
@@ -233,14 +229,14 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
   
   // Xóa socket listeners
   const removeSocketListeners = () => {
-    // Thiết lập lại handlers rỗng để hủy các listeners
+    // hủy các listeners
     socketService.onMessage(() => {});
     socketService.onTyping(() => {});
     socketService.onStopTyping(() => {});
     socketService.onError(() => {});
   };
 
-  // Cải thiện hàm fetchCurrentUserId để lấy đúng ID người dùng hiện tại
+  // hàm fetchCurrentUserId để lấy đúng ID người dùng hiện tại
   const fetchCurrentUserId = async () => {
     try {
       console.log('-------- FETCHING CURRENT USER ID --------');
@@ -294,7 +290,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Helper function to decode JWT
+  // hàm giải mã JWT
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split('.')[1];
@@ -311,25 +307,25 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Create hoặc get existing chat theo API tài liệu
+  // Create hoặc get existing cha
   const createOrGetChat = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // Get user token from AsyncStorage
+      // Lấy user token từ AsyncStorage
       const userToken = await AsyncStorage.getItem('accessToken');
       
       if (!userToken) {
         throw new Error('Bạn cần đăng nhập để sử dụng tính năng chat');
       }
-      
-      // Get current user ID for participants
+
+      // Lấy user ID cho người tham gia 
       const storedUser = await AsyncStorage.getItem('user');
       const currentUser = storedUser ? JSON.parse(storedUser) : null;
       const currentUserIdLocal = currentUser?._id;
       
-      // Check if we have either userId or email
+      // Kiểm tra xem nếu userId hoặc email có tồn tại không
       if ((!userId || userId.trim() === '') && (!email || email.trim() === '')) {
         console.error('Invalid userId and email:', { userId, email });
         setError('Không thể xác định người dùng. Vui lòng thử lại sau.');
@@ -358,7 +354,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         
         fetchMessages(chatData._id);
       } 
-      // Otherwise use email to find the user first
+      // Nếu không thì sử dụng email để tìm người dùng trước
       else if (email && email.trim() !== '') {
         console.log('Finding user with email:', email);
         
@@ -403,7 +399,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
           const chatData = await resChat.json();
           setChat(chatData);
           
-          // Load messages for this chat
+          // Tải đoạn tin nhắn của cuộc trò chuyện
           fetchMessages(chatData._id);
         } catch (err) {
           console.error('Error finding user or creating chat:', err);
@@ -413,7 +409,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     } catch (err: unknown) {
       console.error('Error creating chat:', err);
       
-      // Provide more specific error messages based on the error
+      // Hiển thị thêm thông tin chi tiết của tôi
       if (err instanceof Error) {
         if (err.message === 'Không tìm thấy người dùng với email này') {
           setError('Không tìm thấy người dùng với email này. Vui lòng kiểm tra lại thông tin.');
@@ -430,7 +426,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Fetch messages cho chat theo API pagination từ tài liệu
+  // Fetch messages cho chat
   const fetchMessages = async (chatId: string, pageNum = 1, append = false) => {
     try {
       if (pageNum === 1) {
@@ -443,14 +439,14 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         setLoading(true);
       }
       
-      // Get user token from AsyncStorage
+      // Lấy user token từ AsyncStorage
       const userToken = await AsyncStorage.getItem('accessToken');
       
       if (!userToken) {
         throw new Error('Bạn cần đăng nhập để xem tin nhắn');
       }
       
-      // Fetch messages via REST API using fetch
+      // Lấy tin nhắn thông qua REST API sử dụng fectch
       const url = `${API_URL}/v1/chats/${chatId}/messages?page=${pageNum}&limit=20`;
       const resMsg = await fetch(url, {
         method: 'GET',
@@ -461,12 +457,12 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
       const data = await resMsg.json();
       const msgs: Message[] = Array.isArray(data.messages) ? data.messages : [];
       
-      // Kiểm tra còn tin nhắn để load thêm không
+      // Kiểm tra tin nhắn còn lại
       if (msgs.length < 20) {
         setHasMoreMessages(false);
       }
       
-      // Nếu đang append (load more), thêm vào danh sách hiện tại
+      // Nếu đang còn , thêm vào danh sách hiện tại
       if (append) {
         setMessages(prevMessages => [...prevMessages, ...msgs]);
       } else {
@@ -489,12 +485,11 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     fetchMessages(chat._id, page + 1, true);
   };
 
-  // Handle typing indicator theo tài liệu, sử dụng socketService
+  // Chức năng hiển thị đang nhập, sử dụng socketService
   const handleTyping = () => {
     if (chat?._id) {
       socketService.sendTyping(chat._id);
-      
-      // Clear existing timeout
+     
       if (typingTimeout) {
         clearTimeout(typingTimeout);
       }
@@ -510,7 +505,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Send a new message, sử dụng socketService
+  // Gửi tin nhắn mới, sử dụng socketService
   const sendMessage = async () => {
     if (!newMessage.trim() || !chat?._id) return;
     
@@ -518,13 +513,13 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     try {
       Keyboard.dismiss();
       
-      // Send stop typing event
+      // Không hiển thị đang chat nữa
       socketService.sendStopTyping(chat._id);
       
-      // Send message via socket service
+      // Gửi tin nhắn thông qua socket service
       socketService.sendMessage(chat._id, newMessage.trim());
       
-      // Clear input and typing timeout
+      //Xóa thời gian nhập và gõ
       setNewMessage('');
       if (typingTimeout) {
         clearTimeout(typingTimeout);
@@ -537,7 +532,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Retry loading on error
+  // Thử lại tải khi có lỗi
   const handleRetry = () => {
     if (chat?._id) {
       fetchMessages(chat._id);
@@ -576,7 +571,6 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  // Render a message item
   const renderMessage = ({ item }: { item: Message }) => {
     // Trích xuất senderId theo cách chống lỗi
     let senderId = '';
@@ -609,7 +603,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
       - IS OTHER: ${isOtherUser}
     `);
     
-    // ⚠️ FIX QUAN TRỌNG: Xác định tên người gửi dựa trên ID thực tế
+    //  Xác định tên người gửi dựa trên ID thực tế
     let senderName = "Unknown";
     
     if (isMine) {
@@ -717,7 +711,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         barStyle="dark-content"
       />
       
-      {/* Header */}
+      {}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -727,11 +721,11 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{recipient}</Text>
         <View style={styles.headerRight}>
-          {/* Optional: Add call or video call icons here */}
+          {}
         </View>
       </View>
       
-      {/* Messages List */}
+      {}
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#2196F3" />
@@ -749,7 +743,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         <>
           <FlatList
             ref={flatListRef}
-            extraData={[currentUserId, currentUser?.id, currentUser?._id]} // Thêm tất cả các ID có thể
+            extraData={[currentUserId, currentUser?.id, currentUser?._id]}
             data={messages}
             renderItem={renderMessage}
             keyExtractor={(item) => item._id}
@@ -757,14 +751,14 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
               styles.messagesList,
               isTyping && { paddingBottom: 40 }
             ]}
-            inverted // To display most recent messages at the bottom
+            inverted 
             ListEmptyComponent={renderEmptyChat}
             ListFooterComponent={renderFooter}
             onEndReached={loadMoreMessages}
             onEndReachedThreshold={0.1}
           />
           
-          {/* Typing indicator */}
+          {}
           {isTyping && (
             <View style={styles.typingContainer}>
               <Text style={styles.typingText}>{recipient} đang nhập tin nhắn...</Text>
@@ -773,7 +767,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
         </>
       )}
       
-      {/* Message Input */}
+      {}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
@@ -807,7 +801,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-// Trong hàm đăng xuất (thường nằm ở màn hình Profile hoặc Settings)
+// Trong hàm đăng xuất
 const logout = async (navigation: any) => {
   // Xóa toàn bộ dữ liệu người dùng
   await AsyncStorage.multiRemove(['accessToken', 'user', 'refreshToken']);
@@ -843,7 +837,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   headerRight: {
-    width: 40, // Reserve space for potential icons
+    width: 40,
   },
   loadingContainer: {
     flex: 1,
@@ -906,7 +900,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: '#DCF8C6',
     borderBottomRightRadius: 0,
-    marginLeft: '25%', // Tạo khoảng cách bên trái để tin nhắn hiển thị bên phải
+    marginLeft: '25%',
   },
   theirBubble: {
     alignSelf: 'flex-start',
@@ -914,7 +908,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderWidth: 1,
     borderColor: '#eee',
-    marginRight: '25%', // Tạo khoảng cách bên phải để tin nhắn hiển thị bên trái
+    marginRight: '25%',
   },
   myMessageContainer: {
     alignItems: 'flex-end',
