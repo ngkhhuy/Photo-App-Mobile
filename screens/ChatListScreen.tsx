@@ -19,7 +19,6 @@ import { API_URL } from '../constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import socketService from '../services/socketService';
 
-// Define chat type theo mô hình dữ liệu từ tài liệu
 type Chat = {
   _id: string;
   participants: Array<{
@@ -34,7 +33,6 @@ type Chat = {
   updatedAt: string;
 };
 
-// Define navigation parameter list
 type RootStackParamList = {
   Chat: {
     recipient: string;
@@ -53,7 +51,7 @@ const ChatListScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Khai báo messageListener và unmountedRef
+
   const messageListenerRef = useRef<(() => void) | null>(null);
   const unmountedRef = useRef(false);
 
@@ -122,7 +120,7 @@ const ChatListScreen = () => {
         : [];
       console.log('Fetched chats:', chatsList);
       setChats(chatsList);
-      // Join all chat rooms so this screen receives new message events
+      
       if (socketService.isConnected()) {
         chatsList.forEach((c) => socketService.joinChat(c._id));
       }
@@ -159,18 +157,18 @@ const ChatListScreen = () => {
     const date = new Date(timestamp);
     const now = new Date();
     
-    // If today, show time
+    // Nếu là hôm nay hiển thị thời gian
     if (date.toDateString() === now.toDateString()) {
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
     
-    // If within last week, show day name
+    // Nếu là tuần trước thì hiển thị thứ
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays < 7) {
       return date.toLocaleDateString([], { weekday: 'short' });
     }
     
-    // Otherwise show date
+    // Còn lại thì hiển thị ngày
     return date.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
   };
 
