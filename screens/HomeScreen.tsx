@@ -15,7 +15,7 @@ import { usePhotos } from '../hooks/usePhotos';
 import PhotoCard from '../components/PhotoCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 
-// Định nghĩa kiểu Photo khớp với API
+// Định nghĩa kiểu Photo
 interface Photo {
   id: string;
   imageUrl: string;
