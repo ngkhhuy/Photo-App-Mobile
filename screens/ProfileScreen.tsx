@@ -49,7 +49,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        // First check if we have valid authentication
+        // Kiểm tra xem có authentication 
         const token = await AsyncStorage.getItem('accessToken');
         if (!token) {
           console.log('No access token found');
