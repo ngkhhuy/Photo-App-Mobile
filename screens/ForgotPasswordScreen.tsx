@@ -26,18 +26,18 @@ const ForgotPasswordScreen = () => {
   const [codeSent, setCodeSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Validate email format
+  // Xác thực định dạng email
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Handle forgot password request
+  // Xử lý yêu cầu quên mật khẩu
   const handleSendCode = async () => {
-    // Reset states
+    // Reset trạng thái
     setErrorMessage(null);
     
-    // Validate input
+    // xác thực đầu vào
     if (!email.trim()) {
       setErrorMessage('Vui lòng nhập địa chỉ email');
       return;
@@ -51,12 +51,12 @@ const ForgotPasswordScreen = () => {
     try {
       setLoading(true);
       
-      // Call API to request verification code
+      // Gọi API để yêu cầu mã xác minh
       const response = await axios.post(`${API_URL}/v1/users/forgot-password`, {
         email
       });
       
-      // Show verification code input
+      // hiển thị mã xác thực
       setCodeSent(true);
       
     } catch (error: any) {
@@ -71,14 +71,14 @@ const ForgotPasswordScreen = () => {
     }
   };
 
-  // Handle verification code submission
+  // Xử lý việc gửi mã xác minh
   const handleVerifyCode = () => {
     if (!verificationCode.trim()) {
       setErrorMessage('Vui lòng nhập mã xác thực');
       return;
     }
     
-    // Navigate to reset password screen with the verification code
+    // Điều hướng đến màn hình đặt lại mật khẩu bằng mã xác minh
     navigation.navigate('ResetPassword', { code: verificationCode });
   };
 
@@ -122,7 +122,7 @@ const ForgotPasswordScreen = () => {
             </Text>
             
             {!codeSent ? (
-              // Email input form
+              // Form nhập email
               <>
                 <View style={styles.inputContainer}>
                   <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
@@ -154,7 +154,7 @@ const ForgotPasswordScreen = () => {
                 </TouchableOpacity>
               </>
             ) : (
-              // Verification code input form
+              // Xác thực form nhập
               <>
                 <View style={styles.inputContainer}>
                   <Ionicons name="key-outline" size={20} color="#999" style={styles.inputIcon} />
