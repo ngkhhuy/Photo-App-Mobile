@@ -23,14 +23,14 @@ import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing'; // Thay thế import từ react-native-share
 
-// Định nghĩa kiểu Photo khớp với API
+// Định nghĩa kiểu Photo
 interface Photo {
   _id: string;
   imageUrl: string;
   description: string;
   keywords: string[];
   user: {
-    _id: string;  // API trả về "_id"
+    _id: string; 
     name: string;
     email: string;
   };
@@ -50,14 +50,14 @@ type RootStackParamList = {
 // Định nghĩa kiểu props cho PhotoDetailScreen
 type PhotoDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'PhotoDetail'>;
 
-// Extend component type to include sharedElements
+// Mở rộng loại thành phần để bao gồm sharedElements
 type SharedElementScreenComponent<P> = React.FC<P> & {
   sharedElements?: (route: any) => string[];
 };
 
 const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = ({ route, navigation }) => {
   const { photo } = route.params;
-  // Normalized photo ID for API calls
+  // ID ảnh được chuẩn hóa cho call api
   const photoId = photo._id ?? (photo as any).id;
 
   // useEffect(() => {
@@ -74,7 +74,7 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
     );
   }, [photo.imageUrl]);
 
-  // Like count state
+  // Đếm lượt like
   const [likes, setLikes] = useState(photo.likes);
   // Like handler
   const handleLike = async () => {
@@ -85,7 +85,7 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
         return;
       }
       
-      // Using PUT method as specified by the API
+      // Sử dụng phương thức PUT
       const response = await axios.put(`${API_URL}/v1/photos/${photoId}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
       
       console.log('Like response:', response.data);
       
-      // Update the like count with the new value from the response
+      // Cập nhật bộ đếm lượt like từ API
       if (response.data && (response.data.likes !== undefined || 
           (response.data.photo && response.data.photo.likes !== undefined))) {
         const newLikes = response.data.likes ?? response.data.photo?.likes;
@@ -104,7 +104,7 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
     } catch (err: any) {
       console.error('Like error:', err);
       
-      // More detailed error handling
+      // Xử lý lỗi chi tiết hơn
       if (err.response) {
         console.error('Error response:', err.response.status, err.response.data);
       }
@@ -113,11 +113,11 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
     }
   };
 
-  // State for fetched detail
+  // Trạng thái lấy thông tin ảnh chi tiết
   const [photoData, setPhotoData] = useState<Photo | null>(null);
   const [loadingDetail, setLoadingDetail] = useState<boolean>(true);
 
-  // Fetch full detail to get user._id
+  // Fetch đầy đủ thông tin chi tiết để có được user._id
   useEffect(() => {
     (async () => {
       try {
@@ -136,19 +136,18 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
     })();
   }, [photoId]);
 
-  // Sync likes state when detailed photo loads
+  // Sync trạng thái thích ảnh khi load thông tin chi tiết ảnh
   useEffect(() => {
     if (photoData) {
       setLikes(photoData.likes);
     }
   }, [photoData]);
 
-  // Use fetched detail or fallback to route param
+  // Sử dụng trạng thái đã lấy.
   const currentPhoto = photoData || photo;
 
   const [isChangingVisibility, setIsChangingVisibility] = useState(false);
 
-  // Toggle visibility locally; API call moved to ProfileScreen
   const togglePhotoVisibility = () => {
     setPhotoData(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null);
   };
@@ -158,7 +157,7 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
   // Thêm state để theo dõi trạng thái tải xuống
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Cập nhật hàm handleDownloadImage
+  // Hàm handleDownloadImage
   const handleDownloadImage = async () => {
     try {
       // Yêu cầu quyền truy cập thư viện ảnh
@@ -169,10 +168,10 @@ const PhotoDetailScreen: SharedElementScreenComponent<PhotoDetailScreenProps> = 
         return;
       }
 
-      // Bắt đầu tải - hiển thị indicator thay vì Alert
+      // Bắt đầu tải 
       setIsDownloading(true);
 
-      // Tạo tên file với thời gian hiện tại để tránh trùng lặp
+      // Tạo tên file với thời gian hiện tại
       const fileName = `photo-${Date.now()}.jpg`;
       
       // Tải ảnh về bộ nhớ tạm
