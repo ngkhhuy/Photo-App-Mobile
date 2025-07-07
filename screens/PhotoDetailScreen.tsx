@@ -21,7 +21,7 @@ import axios from 'axios';
 import { SharedElement } from 'react-navigation-shared-element';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-import * as Sharing from 'expo-sharing'; // Thay thế import từ react-native-share
+import * as Sharing from 'expo-sharing';
 
 // Định nghĩa kiểu Photo
 interface Photo {
