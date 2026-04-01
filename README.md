@@ -13,7 +13,7 @@ A React Native & Expo mobile application for photo sharing with user authenticat
 - [Project Structure](#project-structure)
 - [API Backend](#api-backend)
 - [Contributing](#contributing)
-- [License](#license)
+- [Demo](#demo)
 - [Contact](#contact)
 
 ## Features
