@@ -149,9 +149,6 @@ Branch naming conventions:
   </tr>
 </table>
 
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## Contact
 DEMO
