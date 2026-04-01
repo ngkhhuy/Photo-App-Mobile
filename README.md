@@ -13,7 +13,7 @@ A React Native & Expo mobile application for photo sharing with user authenticat
 - [Project Structure](#project-structure)
 - [API Backend](#api-backend)
 - [Contributing](#contributing)
-- [Demo](#demo)
+- [Demo](#DEMODEMO)
 - [Contact](#contact)
 
 ## Features
@@ -124,7 +124,7 @@ Branch naming conventions:
 - `release/…` for version preparation
 - `hotfix/…` for urgent production fixes
 - 
-## 📱 DEMO
+## DEMO
 
 <table>
   <tr>
